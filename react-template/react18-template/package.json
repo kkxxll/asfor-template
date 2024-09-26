@@ -1,0 +1,13 @@
+{
+  "name": "@asfor-cli/template-react18",
+  "version": "0.0.1",
+  "description": "react template",
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "template"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
