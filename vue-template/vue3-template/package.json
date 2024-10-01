@@ -1,10 +1,11 @@
 {
   "name": "@asfor-cli/template-vue3",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "vue3 template",
   "author": "",
   "license": "ISC",
   "files": [
+    "plugins",
     "template"
   ],
   "publishConfig": {
