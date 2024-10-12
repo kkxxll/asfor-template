@@ -1,0 +1,18 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:front": "pnpm --filter ./packages/frontEnd dev",
+    "dev:back": "pnpm --filter ./packages/backEnd dev",
+    "dev": "npm run dev:front & npm run dev:back",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
