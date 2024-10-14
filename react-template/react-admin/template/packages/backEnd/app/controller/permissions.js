@@ -20,6 +20,7 @@ class PermissionsController extends Controller {
     const { ctx } = this;
 
     const payload = getJWTPayload(ctx.headers.authorization);
+
     const { name } = payload;
     const dataStr = await fs.promises.readFile(path.resolve('db/', `${name}_permissions.json`));
     ctx.response.body = {

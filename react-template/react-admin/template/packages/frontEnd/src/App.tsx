@@ -1,38 +1,84 @@
-import { useState } from 'react'
-import './App.css'
-import { login } from "./service";
+import {
+  useNavigate,
+  Routes,
+  Route,
+} from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import { globalStore } from "@/stores/index";
+import { createRouteData, routeData } from "@/router/index";
+import { observer } from "mobx-react";
+import { getPermissions } from "./service";
+import Login from "./pages/LoginPage";
+import LayoutPage from "./pages/LayoutPage";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = observer(() => {
+  const { setRouterData, setPermissions } = globalStore;
+  const [routerData, setRouter] = useState<any>();
+  const navigate = useNavigate();
+  const token = sessionStorage.getItem("ACCESS_TOKEN");
 
-  login({
-    name: 'admin',
-    password: '123',
-  }).then((res) => {
-    console.log(res)
-    // const { token } = res.data;
-    // globalStore.setToken(token);
-    
-  });
+  useEffect(() => {
+    // debugger
+    initRouterData()
+  }, [token, globalStore.token]);
+
+
+  const initRouterData = async () => {
+    if (globalStore.token || token) {
+      sessionStorage.setItem("ACCESS_TOKEN", globalStore.token || token);
+
+      const res = await getPermissions()
+      const { data } = res;
+      const temp = createRouteData(data);
+      sessionStorage.setItem("PER", data);
+      setRouter(temp);
+      setRouterData(temp);
+      setPermissions(data);
+      navigate("/center/hello");
+
+    } else {
+      navigate("/");
+      setRouter(routeData);
+      setRouterData(routeData);
+    }
+  }
+
+
+  const toRenderRoute = (item) => {
+    const { children } = item;
+    let arr = [];
+    if (children) {
+      arr = children.map((item) => {
+        return toRenderRoute(item);
+      });
+    }
+    return (
+      <Route
+        children={arr}
+        key={item.path}
+        path={item.path}
+        element={item.element}
+      ></Route>
+    );
+  };
 
   return (
     <>
-      <div>
-        
-      </div>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {routerData && (
+        <Routes>
+          <Route path="/" element={<Login></Login>}></Route>
+          <Route
+            path="/center"
+            element={<LayoutPage></LayoutPage>}
+            children={routerData?.[1]?.children?.map((item) => {
+              return toRenderRoute(item);
+            })}
+          ></Route>
+        </Routes>
+      )}
     </>
-  )
-}
-
+  );
+});
 export default App
