@@ -34,6 +34,10 @@ class PermissionsController extends Controller {
     const payload = getJWTPayload(ctx.headers.authorization);
     const { name } = payload;
     const permissions = JSON.stringify(ctx.request.body); // 获取post提交的数据
+
+    console.log(name);
+    console.log(permissions);
+
     await fs.promises.writeFile(path.resolve('db/', `${name}_permissions.json`), permissions);
 
     ctx.response.body = {

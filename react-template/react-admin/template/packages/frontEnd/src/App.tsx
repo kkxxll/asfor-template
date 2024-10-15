@@ -1,84 +1,89 @@
-import {
-  useNavigate,
-  Routes,
-  Route,
-} from "react-router-dom";
+import routerManager from "@/router/routerManager";
+import { useInject } from "@/stores/index";
 import { useEffect } from "react";
-import { useState } from "react";
-import { globalStore } from "@/stores/index";
-import { createRouteData, routeData } from "@/router/index";
-import { observer } from "mobx-react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { RouteItem } from "./router/types";
 import { getPermissions } from "./service";
-import Login from "./pages/LoginPage";
-import LayoutPage from "./pages/LayoutPage";
-import "./App.css";
+import './App.css'
 
-const App = observer(() => {
-  const { setRouterData, setPermissions } = globalStore;
-  const [routerData, setRouter] = useState<any>();
+// 递归创建路由组件 配合动态权限
+const toRenderRoute = (item: RouteItem) => {
+  const { children } = item;
+  let routeChildren = [];
+  if (children) {
+    routeChildren = children.map((item) => {
+      return toRenderRoute(item);
+    });
+  }
+  return (
+    <Route
+      children={routeChildren}
+      key={item.path}
+      path={item.path}
+      element={item.element}
+    ></Route>
+  );
+};
+
+export default () => {
+  // natur
+  const [countStore] = useInject("permissions");
+  const {
+    state: { routesData, token },
+    actions: { setPermissions, setRoutesData },
+  } = countStore;
+
   const navigate = useNavigate();
-  const token = sessionStorage.getItem("ACCESS_TOKEN");
+  const location = useLocation();
+
+  const toStart = (permissions: string[]) => {
+    sessionStorage.setItem("PER", JSON.stringify(permissions));
+    // 根据后台返回的权限，创建路由
+    const routesDataTemp =
+      routerManager.createRoutesConfigByPermissions(permissions);
+    // natur 替换mobx
+    setRoutesData(routesDataTemp);
+    setPermissions(permissions);
+  };
 
   useEffect(() => {
-    // debugger
-    initRouterData()
-  }, [token, globalStore.token]);
-
-
-  const initRouterData = async () => {
-    if (globalStore.token || token) {
-      sessionStorage.setItem("ACCESS_TOKEN", globalStore.token || token);
-
-      const res = await getPermissions()
-      const { data } = res;
-      const temp = createRouteData(data);
-      sessionStorage.setItem("PER", data);
-      setRouter(temp);
-      setRouterData(temp);
-      setPermissions(data);
-      navigate("/center/hello");
-
+    if (token) {
+      const permissions: string[] = JSON.parse(
+        sessionStorage.getItem("PERMISSIONS")
+      );
+      if (!permissions) {
+        getPermissions()
+          .then((res) => {
+            const { data } = res;
+            sessionStorage.setItem("PERMISSIONS", JSON.stringify(data));
+            toStart(data);
+          })
+          .finally(() => {
+            if (location.pathname == "/") {
+              navigate("/center/hello");
+            }
+          });
+      } else {
+        toStart(permissions);
+        // 如果当前是登陆页，那就直接跳转到中心页面
+        if (location.pathname == "/") {
+          navigate("/center/hello");
+        }
+      }
     } else {
+      // 权限变了，那么就要重新创建路由，用默认的路由配置
+      setRoutesData(routerManager.getRoutesDefalutData());
       navigate("/");
-      setRouter(routeData);
-      setRouterData(routeData);
     }
-  }
-
-
-  const toRenderRoute = (item) => {
-    const { children } = item;
-    let arr = [];
-    if (children) {
-      arr = children.map((item) => {
-        return toRenderRoute(item);
-      });
-    }
-    return (
-      <Route
-        children={arr}
-        key={item.path}
-        path={item.path}
-        element={item.element}
-      ></Route>
-    );
-  };
+  }, [token]);
 
   return (
     <>
-      {routerData && (
-        <Routes>
-          <Route path="/" element={<Login></Login>}></Route>
-          <Route
-            path="/center"
-            element={<LayoutPage></LayoutPage>}
-            children={routerData?.[1]?.children?.map((item) => {
-              return toRenderRoute(item);
-            })}
-          ></Route>
-        </Routes>
-      )}
+      <Routes>
+        {routesData?.map((item) => {
+          return toRenderRoute(item);
+        })}
+      </Routes>
     </>
   );
-});
-export default App
+};
