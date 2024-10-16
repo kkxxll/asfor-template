@@ -15,32 +15,7 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
 
-  packages/backEnd:
-    dependencies:
-      egg:
-        specifier: ^3.17.5
-        version: 3.28.0
-      egg-scripts:
-        specifier: '2'
-        version: 2.17.0
-      jsonwebtoken:
-        specifier: ^9.0.2
-        version: 9.0.2
-    devDependencies:
-      egg-bin:
-        specifier: '6'
-        version: 6.10.0(@types/node@22.7.5)(egg-mock@5.12.5(egg@3.28.0)(mocha@10.7.3))(typescript@5.6.3)
-      egg-mock:
-        specifier: '5'
-        version: 5.12.5(egg@3.28.0)(mocha@10.7.3)
-      eslint:
-        specifier: '8'
-        version: 8.57.1
-      eslint-config-egg:
-        specifier: '13'
-        version: 13.1.0(eslint@8.57.1)(typescript@5.6.3)
-
-  packages/frontEnd:
+  packages/admin:
     dependencies:
       antd:
         specifier: ^5.0.0
@@ -103,6 +78,31 @@ importers:
       vite:
         specifier: ^5.4.8
         version: 5.4.8(@types/node@22.7.5)(sass@1.79.5)
+
+  packages/dev-server:
+    dependencies:
+      egg:
+        specifier: ^3.17.5
+        version: 3.28.0
+      egg-scripts:
+        specifier: '2'
+        version: 2.17.0
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+    devDependencies:
+      egg-bin:
+        specifier: '6'
+        version: 6.10.0(@types/node@22.7.5)(egg-mock@5.12.5(egg@3.28.0)(mocha@10.7.3))(typescript@5.6.3)
+      egg-mock:
+        specifier: '5'
+        version: 5.12.5(egg@3.28.0)(mocha@10.7.3)
+      eslint:
+        specifier: '8'
+        version: 8.57.1
+      eslint-config-egg:
+        specifier: '13'
+        version: 13.1.0(eslint@8.57.1)(typescript@5.6.3)
 
 packages:
 

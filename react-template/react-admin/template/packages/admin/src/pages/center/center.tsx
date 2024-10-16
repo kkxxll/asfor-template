@@ -1,3 +1,5 @@
+
+import { useTranslation } from 'react-i18next';
 import KeepAlive from "@/common/hocs/keepAlive";
 import themeProviderHoc from "@/common/hocs/themeProviderHoc/index";
 import useLocationListen from "@/common/hooks/useLocationListen";
@@ -5,7 +7,7 @@ import routerManager from "@/router/routerManager";
 import { RouteItem } from "@/router/types";
 import { useInject } from "@/stores/index";
 import { UserOutlined } from "@ant-design/icons";
-import { Button, Layout, Menu, Modal } from "antd";
+import { Button, Layout, Menu, Modal, Select } from "antd";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { observer } from "mobx-react";
 import { createElement, useEffect, useState } from "react";
@@ -39,6 +41,7 @@ const generateMenuDataLoop = (data: RouteItem[], result: MenuItem[]) => {
 };
 
 const center = observer(() => {
+  const { t, i18n } = useTranslation();
   const [permissionsStore] = useInject("permissions");
   const {
     state: { routesData },
@@ -46,6 +49,7 @@ const center = observer(() => {
   } = permissionsStore;
   const navigate = useNavigate();
   const [defaultOpenKeys, setDefaultOpenKeys] = useState([]);
+  const [curLanguage, setLanguage] = useState('zh');
   const [defaultSelectedKeys, setDefaultSelectedKeys] = useState([]);
   const [menuData, setMenuData] = useState<ItemType[]>([]);
   useLocationListen((location: Location) => {
@@ -117,6 +121,18 @@ const center = observer(() => {
         >
           重置权限
         </Button>
+        <Select
+          value={curLanguage}
+          style={{
+            width: 120
+          }} 
+          onChange={(v) => {
+              setLanguage(v)
+              i18n.changeLanguage(v)
+          }}>
+          <Select.Option value="zh">{t('login.localZh')}</Select.Option>
+          <Select.Option value="en">{t('login.localEn')}</Select.Option>
+        </Select>
       </Header>
       <Layout>
         <Sider width={260} className="site-layout-background">

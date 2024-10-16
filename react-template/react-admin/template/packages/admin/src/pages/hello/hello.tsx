@@ -1,11 +1,14 @@
 import "react";
 import styles from "./index.module.scss";
-import { Image, Upload } from "antd";
+import { useTranslation, Trans } from 'react-i18next';
+
 
 export default (props) => {
+
+  const { t } = useTranslation();
   return (
     <div className={styles.content}>
-      <div className={styles.title}>hello admin</div>
+      <div className={styles.title}>{t('hello.title')}</div>
       <div className={styles.infoBoard}>
         <div
           style={{

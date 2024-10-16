@@ -11,12 +11,14 @@
   "dependencies": {
     "antd": "^5.0.0",
     "axios": "^1.7.7",
+    "i18next": "^23.16.0",
     "mobx": "^6.13.3",
     "mobx-react": "^9.1.1",
     "natur": "^3.0.1",
     "natur-immer": "^1.0.12",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-i18next": "^15.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
