@@ -1,7 +1,7 @@
 {
-  "name": "@asfor-cli/template-react-admin",
+  "name": "@asfor-cli/template-vue3-simple",
   "version": "0.0.1",
-  "description": "react admin template",
+  "description": "vue3 template",
   "author": "",
   "license": "ISC",
   "files": [
