@@ -5,35 +5,68 @@ const { VueLoaderPlugin } = require("vue-loader");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const devMode = process.env.NODE_ENV !== "production";
 
+
+
+const prodPlugins = [
+  new MiniCssExtractPlugin({
+    filename: "css/[name].[hash].css",
+    chunkFilename: "[id].css",
+  }),
+  new VueLoaderPlugin({
+    publicPath: "../"
+  }),
+  new HtmlWebpackPlugin({ template: "./index.html" }),
+]
+
+
+if (!devMode) {
+  prodPlugins.unshift(new CleanWebpackPlugin())
+}
+
 module.exports = {
   entry: {
     'main': './src/main.js',
     'test': './src/test.js',
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    },
+    extensions: ['.js', '.json', '.vue']
+  },
   module: {
     rules: [
+      {
+        test: /\.css$/,
+        use: [
+          devMode ? "vue-style-loader" : {
+            loader: MiniCssExtractPlugin.loader
+          },
+          'css-loader',
+        ],
+      },
+      {
+        test: /\.less$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'less-loader'
+        ],
+      },
       {
         test: /\.vue$/,
         use: ["vue-loader"],
       },
       // {
-      //   test: /\.css$/,
-      //   use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader'] // 从右向左解析原则
-
+      //   test:/\.js$/,
+      //   use:{
+      //     loader:'babel-loader',
+      //     options:{
+      //       presets:['@babel/preset-env']
+      //     }
+      //   },
+      //   exclude:/node_modules/
       // },
-      // {
-      //   test: /\.less$/,
-      //   use: ['style-loader', 'css-loader', 'less-loader'] // 从右向左解析原则
-      // }
-      {
-        test: /\.(le|c)ss$/,
-        use: [
-          devMode ? "style-loader" : MiniCssExtractPlugin.loader,
-          "css-loader",
-          // "postcss-loader",
-          "less-loader",
-        ],
-      },
     ],
   },
   devServer: {
@@ -44,16 +77,7 @@ module.exports = {
   },
   output: {
     filename: '[name].[contenthash].js',
-    // path: path.resolve(__dirname, "dist"),
     path: __dirname + '/dist',
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({
-      filename: "[name].[hash].css",
-      chunkFilename: "[id].css",
-    }),
-    new VueLoaderPlugin(),
-    new HtmlWebpackPlugin({ template: "./index.html" }),
-  ],
+  plugins: prodPlugins
 };

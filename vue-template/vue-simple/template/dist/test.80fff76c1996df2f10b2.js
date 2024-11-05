@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktemplate=self.webpackChunktemplate||[]).push([[255],{667:()=>{new Promise(((e,s)=>{setTimeout((()=>{e(111)}),2e3)})).then((e=>{console.log("res",e)})),(new Set).add(1),console.log(4)}},e=>{e(e.s=667)}]);
