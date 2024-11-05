@@ -5,8 +5,6 @@ const { VueLoaderPlugin } = require("vue-loader");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const devMode = process.env.NODE_ENV !== "production";
 
-
-
 const prodPlugins = [
   new MiniCssExtractPlugin({
     filename: "css/[name].[hash].css",
@@ -28,6 +26,10 @@ module.exports = {
     'main': './src/main.js',
     'test': './src/test.js',
   },
+  output: {
+    filename: '[name].[contenthash].js',
+    path: __dirname + '/dist',
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
@@ -37,47 +39,21 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [
-          devMode ? "vue-style-loader" : {
-            loader: MiniCssExtractPlugin.loader
-          },
-          'css-loader',
-        ],
+        test: /\.vue$/,
+        use: ["vue-loader"],
       },
       {
-        test: /\.less$/,
+        test: /\.(le)|(c)ss$/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
           'less-loader'
         ],
       },
-      {
-        test: /\.vue$/,
-        use: ["vue-loader"],
-      },
-      // {
-      //   test:/\.js$/,
-      //   use:{
-      //     loader:'babel-loader',
-      //     options:{
-      //       presets:['@babel/preset-env']
-      //     }
-      //   },
-      //   exclude:/node_modules/
-      // },
     ],
-  },
-  devServer: {
-    static: './dist',
   },
   optimization: {
     runtimeChunk: 'single', // 共享运行时文件
-  },
-  output: {
-    filename: '[name].[contenthash].js',
-    path: __dirname + '/dist',
   },
   plugins: prodPlugins
 };
