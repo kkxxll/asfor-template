@@ -11,7 +11,7 @@ const prodPlugins = [
     chunkFilename: "[id].css",
   }),
   new VueLoaderPlugin({
-    publicPath: "../"
+    // publicPath: "../"
   }),
   new HtmlWebpackPlugin({ template: "./index.html" }),
 ]
@@ -29,6 +29,7 @@ module.exports = {
   output: {
     filename: '[name].[contenthash].js',
     path: __dirname + '/dist',
+    // assetModuleFilename: 'images/[hash][ext][query]',
   },
   resolve: {
     alias: {
@@ -40,7 +41,19 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        use: ["vue-loader"],
+        use: [{
+          loader: 'vue-loader',
+        }],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10 * 1024 // 10kb
+          }
+        }
       },
       {
         test: /\.(le)|(c)ss$/,

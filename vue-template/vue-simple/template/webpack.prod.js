@@ -7,10 +7,10 @@ module.exports = merge(webpackConfig, {
   mode: 'production',
   devtool: 'cheap-module-source-map',
   plugins: [
-    new CopyPlugin({
-      patterns: [
-        { from: './src/assets', to: 'assets' },
-      ],
-    }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     { from: './src/assets', to: 'assets' },
+    //   ],
+    // }),
   ]
 });
